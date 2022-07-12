@@ -4,5 +4,5 @@ export default app
 export {
   TChopReq as ChopReq,
   TChopRes as ChopRes,
-  TRouteCbFunction as RouteCb,
+  TRouteCbFunction as ChopCb,
 } from './src/utility/routeHelpers'

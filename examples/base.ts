@@ -1,15 +1,15 @@
-import { RouteCb } from '../public'
+import { ChopCb, ChopReq, ChopRes } from '../public'
 import Chopstick from '../src/bootstrap/app'
 
 const app = new Chopstick()
 
-const middleware: RouteCb = (_, res) => {
+const middleware: ChopCb = (_, res) => {
   res.userData = {
     test: true,
   }
 }
 
-const returnJson: RouteCb = (_, res) => {
+const returnJson: ChopCb = (_, res) => {
   const anotherObj = {
     chop: 'world',
   }
@@ -18,7 +18,7 @@ const returnJson: RouteCb = (_, res) => {
 }
 
 app.get('/chop', [middleware, returnJson])
-app.get('/chop/:id', ({ query, params }, res) => {
+app.get('/chop/:id', ({ query, params }: ChopReq, res: ChopRes) => {
   console.log('chopchop')
 
   console.log(params)
@@ -30,3 +30,7 @@ app.get('/chop/:id', ({ query, params }, res) => {
 })
 
 app.listen()
+// Defaults to port 3000
+//
+// To run on port 8080 do:
+// app.listen({ port: 8080 })
