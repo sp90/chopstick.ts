@@ -3,6 +3,9 @@
     "lib": ["ESNext"],
     "module": "esnext",
     "target": "esnext",
-    "types": ["bun-types"]
+    "types": ["bun-types"],
+    "paths": {
+      "path-to-regexp": ["./node_modules/path-to-regexp/dist/index"]
+    }
   }
 }
