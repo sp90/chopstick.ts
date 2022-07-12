@@ -1,5 +1,4 @@
-// @ts-ignore
-import Bun from 'bun'
+import * as Bun from 'bun'
 import findRoute from '../utility/findRoute'
 import {
   IPathDirectory,

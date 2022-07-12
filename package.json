@@ -11,6 +11,9 @@
   "devDependencies": {
     "jest": "^28.1.2"
   },
+  "alwaysBundle": [
+    "chopstick.ts"
+  ],
   "dependencies": {
     "bun-types": "^0.1.2",
     "path-to-regexp": "^6.2.1"
