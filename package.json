@@ -9,10 +9,10 @@
   "author": "github.com/sp90",
   "license": "ISC",
   "devDependencies": {
-    "bun-types": "^0.1.2",
     "jest": "^28.1.2"
   },
   "dependencies": {
+    "bun-types": "^0.1.2",
     "path-to-regexp": "^6.2.1"
   }
 }
