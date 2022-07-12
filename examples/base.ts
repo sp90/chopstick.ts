@@ -1,14 +1,15 @@
-import { TRouteCbFunction } from '../src/utility/routeHelpers'
+import { RouteCb } from '../public'
+import Chopstick from '../src/bootstrap/app'
 
-const app = new Chop()
+const app = new Chopstick()
 
-const middleware: TRouteCbFunction = (_, res) => {
+const middleware: RouteCb = (_, res) => {
   res.userData = {
     test: true,
   }
 }
 
-const returnJson: TRouteCbFunction = (_, res) => {
+const returnJson: RouteCb = (_, res) => {
   const anotherObj = {
     chop: 'world',
   }
@@ -18,7 +19,7 @@ const returnJson: TRouteCbFunction = (_, res) => {
 
 app.get('/chop', [middleware, returnJson])
 app.get('/chop/:id', ({ query, params }, res) => {
-  console.log('chop')
+  console.log('chopchop')
 
   console.log(params)
   console.log(query)

@@ -104,7 +104,7 @@ export default class Chop {
     const routeExecArr = route ? route.matchExecArr : this.notFoundExec
 
     routeExecArr.forEach((eachCall) => {
-      eachCall(req, res)
+      eachCall(req, res) as TRouteCbFunction
     })
 
     return res.bunRes()
