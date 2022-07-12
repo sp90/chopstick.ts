@@ -1,4 +1,4 @@
-import { match, MatchResult } from 'path-to-regexp'
+import { match, MatchResult } from '../path-to-regex-temp/index'
 import { IPathDirectory, TMethods, TRouteCbFunction } from './routeHelpers'
 
 interface IRoute {
