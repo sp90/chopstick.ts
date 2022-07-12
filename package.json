@@ -1,12 +1,12 @@
 {
   "name": "chopstick.ts",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "public.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "github.com/sp90",
   "license": "ISC",
   "devDependencies": {
     "bun-types": "^0.1.2",
