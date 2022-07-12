@@ -1,6 +1,6 @@
 export type ResType = 'text' | 'json' | 'buffer' | 'arrayBuffer'
 
-export class HelloResponse {
+export class ChopResponse {
   private asType: ResType
   private _status: number = 200
   private _responseBody: string

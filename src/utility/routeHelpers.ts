@@ -1,6 +1,6 @@
 export type TMethods = 'GET' | 'PATCH' | 'PUT' | 'POST' | 'DELETE'
 
-export type TRouteCbFunction = (req: THelloReq, res: any) => any
+export type TRouteCbFunction = (req: TChopReq, res: any) => any
 export type TExecutions = TRouteCbFunction | TRouteCbFunction[]
 
 export const setExecutions = (executions: TExecutions) => {
@@ -28,14 +28,14 @@ export interface IObj {
 export interface IQuery extends IObj {}
 export interface IParams extends IObj {}
 
-export type THelloReq = {
+export type TChopReq = {
   bunReq: Request
   originalUrl: string
   query?: IQuery
   params?: IParams
 }
 
-export type THelloRes = {
+export type TChopRes = {
   // TODO make custom body types available
   _status?: number
   _body?: any

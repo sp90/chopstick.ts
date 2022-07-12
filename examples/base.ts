@@ -1,7 +1,6 @@
-import Hello from '../public'
 import { TRouteCbFunction } from '../src/utility/routeHelpers'
 
-const app = new Hello()
+const app = new Chop()
 
 const middleware: TRouteCbFunction = (_, res) => {
   res.userData = {
@@ -11,15 +10,15 @@ const middleware: TRouteCbFunction = (_, res) => {
 
 const returnJson: TRouteCbFunction = (_, res) => {
   const anotherObj = {
-    hello: 'world',
+    chop: 'world',
   }
 
   return res.json({ ...anotherObj, ...res.userData })
 }
 
-app.get('/hello', [middleware, returnJson])
-app.get('/hello/:id', ({ query, params }, res) => {
-  console.log('hello')
+app.get('/chop', [middleware, returnJson])
+app.get('/chop/:id', ({ query, params }, res) => {
+  console.log('chop')
 
   console.log(params)
   console.log(query)

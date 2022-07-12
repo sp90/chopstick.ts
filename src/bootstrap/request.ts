@@ -1,7 +1,7 @@
-import { IObj, THelloReq } from '../utility/routeHelpers'
+import { IObj, TChopReq } from '../utility/routeHelpers'
 
-export function helloRequest(req: Request, query: IObj, routeData?: any) {
-  const requestObj: THelloReq = {
+export function chopRequest(req: Request, query: IObj, routeData?: any) {
+  const requestObj: TChopReq = {
     bunReq: req,
     originalUrl: req.url,
   }

@@ -9,12 +9,12 @@ import {
   TRouteCbFunction,
 } from '../utility/routeHelpers'
 import { groupParamsByKey } from '../utility/searchparams'
-import { helloRequest } from './request'
-import { HelloResponse } from './response'
+import { chopRequest } from './request'
+import { ChopResponse } from './response'
 
 const pathDirectory: IPathDirectory = {}
 
-export interface IHelloListenOptions {
+export interface IChopListenOptions {
   port: number
 }
 
@@ -26,7 +26,7 @@ const notFoundExecFallback = [
   },
 ]
 
-export default class Hello {
+export default class Chop {
   private notFoundExec: TRouteCbFunction[] = notFoundExecFallback
 
   constructor() {}
@@ -98,8 +98,8 @@ export default class Hello {
       pathDirectory
     )
 
-    let req = helloRequest(bunReq, urlSearchParamsAsObj, route)
-    let res = new HelloResponse()
+    let req = chopRequest(bunReq, urlSearchParamsAsObj, route)
+    let res = new ChopResponse()
 
     const routeExecArr = route ? route.matchExecArr : this.notFoundExec
 
@@ -110,10 +110,10 @@ export default class Hello {
     return res.bunRes()
   }
 
-  listen(options: IHelloListenOptions = { port: 3000 }) {
+  listen(options: IChopListenOptions = { port: 3000 }) {
     const _self = this
 
-    console.log(`App is listening on port ${options.port}`)
+    console.log(`🥢 on port ${options.port}`)
 
     Bun.serve({
       async fetch(req: Request) {
