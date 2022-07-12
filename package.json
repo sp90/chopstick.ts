@@ -1,16 +1,18 @@
 {
-  "name": "framework",
+  "name": "chopstick.ts",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "public.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "bun-types": "^0.1.2",
-    "jest": "^28.1.2",
+    "jest": "^28.1.2"
+  },
+  "dependencies": {
     "path-to-regexp": "^6.2.1"
   }
 }
