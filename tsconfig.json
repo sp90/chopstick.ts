@@ -4,9 +4,9 @@
     "module": "esnext",
     "target": "esnext",
     // "bun-types" is the important part
-    "types": ["bun-types"],
-    "paths": {
-      "path-to-regexp": ["./node_modules/path-to-regexp/dist/index"]
-    }
+    "types": ["bun-types"]
+    // "paths": {
+    //   "path-to-regexp": ["./node_modules/path-to-regexp/dist/index"]
+    // }
   }
 }

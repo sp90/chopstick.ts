@@ -1,4 +1,7 @@
-import { match, MatchResult } from 'path-to-regexp'
+import {
+  match,
+  MatchResult,
+} from '../../node_modules/path-to-regexp/dist/index'
 import { IPathDirectory, TMethods, TRouteCbFunction } from './routeHelpers'
 
 interface IRoute {
