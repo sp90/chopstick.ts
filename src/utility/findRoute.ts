@@ -1,5 +1,5 @@
 import { match, MatchResult } from '../path-to-regex-temp/index'
-import { IPathDirectory, TMethods, TRouteCbFunction } from './routeHelpers'
+import { IMethodDirectory, TMethods, TRouteCbFunction } from './routeHelpers'
 
 interface IRoute {
   matchObj: MatchResult<object>
@@ -9,29 +9,48 @@ interface IRoute {
 const findRoute = (
   method: TMethods,
   urlPathName: string,
-  pathDirectory: IPathDirectory
+  pathDirectory: Map<string, IMethodDirectory>,
+  useDirectory: Map<string, TRouteCbFunction[]>
 ): IRoute | null => {
-  const pathsToMatch = Object.keys(pathDirectory)
-  const finalRoute = pathsToMatch
-    .map((matchingPath) => {
-      const matchObj = match(matchingPath, { decode: decodeURIComponent })(
-        urlPathName
-      )
+  const matches = []
+  const useMatches = []
 
-      const matchExecArr = matchObj && pathDirectory[matchingPath][method]
+  pathDirectory.forEach((_, matchingPath) => {
+    const matchObj = match(matchingPath, { decode: decodeURIComponent })(
+      urlPathName
+    )
 
-      if (matchExecArr) {
-        return {
-          matchObj,
-          matchExecArr,
-        }
-      }
+    const matchExecArr = matchObj && pathDirectory.get(matchingPath)[method]
 
-      return null
-    })
-    .find((item) => item)
+    if (matchExecArr) {
+      matches.push({
+        matchObj,
+        matchExecArr,
+      })
+    }
+  })
 
-  return finalRoute ? finalRoute : null
+  useDirectory.forEach((_, useMatchingPath) => {
+    const matchObj = match(useMatchingPath, { decode: decodeURIComponent })(
+      urlPathName
+    )
+
+    const matchExecArr = matchObj && useDirectory.get(useMatchingPath)
+
+    if (matchExecArr) {
+      useMatches.push(matchExecArr)
+    }
+  })
+
+  const foundMatch = matches.find((item) => item)
+
+  if (foundMatch) {
+    foundMatch.matchExecArr = useMatches.flat().concat(foundMatch.matchExecArr)
+
+    return foundMatch
+  }
+
+  return null
 }
 
 export default findRoute

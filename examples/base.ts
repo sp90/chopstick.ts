@@ -4,12 +4,14 @@ import Chopstick from '../src/bootstrap/app'
 const app = new Chopstick()
 
 const middleware: ChopCb = (_, res) => {
+  console.log('hello middleware')
   res.userData = {
     test: true,
   }
 }
 
 const returnJson: ChopCb = (_, res) => {
+  console.log('hello return json')
   const anotherObj = {
     chop: 'world',
   }
@@ -21,12 +23,15 @@ app.use(() => {
   console.log('hello everywhere')
 })
 
+app.use('/hello', () => {
+  console.log('hello everywhere 2')
+})
+
 app.get('/hello', [middleware, returnJson])
 app.get('/hello/:id', ({ query, params }: ChopReq, res: ChopRes) => {
   console.log('chopchop')
-
-  console.log(params)
-  console.log(query)
+  console.log('params: ', params)
+  console.log('query: ', query)
 
   return res.json({
     singleFound: true,

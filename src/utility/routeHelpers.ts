@@ -11,14 +11,20 @@ export const setExecutions = (executions: TExecutions) => {
   return executions
 }
 
-export interface IPathDirectory {
-  [key: string]: {
-    GET?: TRouteCbFunction[]
-    PUT?: TRouteCbFunction[]
-    PATCH?: TRouteCbFunction[]
-    POST?: TRouteCbFunction[]
-    DELETE?: TRouteCbFunction[]
-  }
+export interface IChopListenOptions {
+  port: string | number
+}
+
+export interface IMethodDirectory {
+  GET?: TRouteCbFunction[]
+  PUT?: TRouteCbFunction[]
+  PATCH?: TRouteCbFunction[]
+  POST?: TRouteCbFunction[]
+  DELETE?: TRouteCbFunction[]
+}
+
+export interface IUseDirectory {
+  [key: string]: TRouteCbFunction[]
 }
 
 export interface IObj {
