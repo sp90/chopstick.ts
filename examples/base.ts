@@ -17,8 +17,12 @@ const returnJson: ChopCb = (_, res) => {
   return res.json({ ...anotherObj, ...res.userData })
 }
 
-app.get('/chop', [middleware, returnJson])
-app.get('/chop/:id', ({ query, params }: ChopReq, res: ChopRes) => {
+app.use(() => {
+  console.log('hello everywhere')
+})
+
+app.get('/hello', [middleware, returnJson])
+app.get('/hello/:id', ({ query, params }: ChopReq, res: ChopRes) => {
   console.log('chopchop')
 
   console.log(params)
@@ -29,7 +33,7 @@ app.get('/chop/:id', ({ query, params }: ChopReq, res: ChopRes) => {
   })
 })
 
-app.listen()
+app.listen({ port: process.env.PORT })
 // Defaults to port 3000
 //
 // To run on port 8080 do:

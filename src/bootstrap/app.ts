@@ -1,5 +1,7 @@
 import * as Bun from 'bun'
+import { pathToRegexp } from '../path-to-regex-temp/index'
 import findRoute from '../utility/findRoute'
+import logging from '../utility/logging'
 import {
   IPathDirectory,
   setExecutions,
@@ -14,7 +16,7 @@ import { ChopResponse } from './response'
 const pathDirectory: IPathDirectory = {}
 
 export interface IChopListenOptions {
-  port: number
+  port: string | number
 }
 
 const notFoundExecFallback = [
@@ -70,17 +72,34 @@ export default class Chop {
     }
   }
 
-  // Todo if no path, apply to all and
-  use(path: string, executions: TExecutions) {
-    const pathConfig = pathDirectory[path]
-    const objectKeys = Object.keys(pathConfig)
+  // TODO - if no path, apply to all and
+  // TODO - map all paths to an array and find matching path's
+  use(pathOrExecutions: string | TExecutions, executions?: TExecutions) {
+    const selectedPath =
+      typeof pathOrExecutions === 'string' ? pathOrExecutions : '(.*)'
+    const selectedExecutions =
+      typeof pathOrExecutions === 'string' ? executions : pathOrExecutions
 
-    objectKeys.forEach((key) => {
-      if (typeof executions === 'function') {
-        pathConfig[key].push(executions)
-      } else {
-        pathConfig[key].concat(executions)
-      }
+    const pathArr = Object.keys(pathDirectory)
+    const pathArrToExecuteOn = pathArr.filter((matchingPath) =>
+      pathToRegexp(selectedPath).exec(matchingPath)
+    )
+
+    console.log(pathArrToExecuteOn)
+
+    pathArrToExecuteOn.forEach((path: string) => {
+      const pathConfig = pathDirectory[path]
+      const pathConfigArr = Object.keys(pathConfig)
+
+      console.log(selectedExecutions)
+
+      pathConfigArr.forEach((key) => {
+        if (typeof selectedExecutions === 'function') {
+          pathConfig[key].unshift(selectedExecutions)
+        } else {
+          selectedExecutions.concat(pathConfig[key])
+        }
+      })
     })
   }
 
@@ -89,6 +108,8 @@ export default class Chop {
   }
 
   _dispatchEvent(bunReq: Request) {
+    logging.message(`${bunReq.url}`)
+
     const urlInstance = new URL(bunReq.url)
     const urlSearchParamsAsObj = groupParamsByKey(urlInstance.searchParams)
     const route = findRoute(
@@ -110,9 +131,12 @@ export default class Chop {
   }
 
   listen(options: IChopListenOptions = { port: 3000 }) {
+    logging.init()
+
     const _self = this
 
-    console.log(`🥢 on port ${options.port}`)
+    logging.info(`🥢 on port ${options.port}`)
+    // logging.message(pathDirectory as any)
 
     Bun.serve({
       async fetch(req: Request) {
@@ -124,9 +148,5 @@ export default class Chop {
         return new Response('Uh oh!!\n' + error.toString(), { status: 500 })
       },
     })
-  }
-
-  _getAppStructure(): IPathDirectory {
-    return JSON.parse(JSON.stringify(pathDirectory))
   }
 }
