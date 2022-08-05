@@ -114,7 +114,7 @@ export default class Chop {
     return res.bunRes()
   }
 
-  listen(options: IChopListenOptions = { port: 3000 }) {
+  listen(options: IChopListenOptions = { port: process.env.PORT || 3000 }) {
     const _self = this
 
     logging.init()
@@ -122,6 +122,7 @@ export default class Chop {
     // logging.message(this.pathDirectory as any)
 
     Bun.serve({
+      port: options.port,
       async fetch(req: Request) {
         const event = _self._dispatchEvent(req)
 
