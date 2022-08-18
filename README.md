@@ -47,17 +47,19 @@ app.listen()
 
 ### Method support state
 
-| app.methods | support |
-| ----------- | :-----: |
-| app.listen  |   ✅    |
-| app.all     |   ✅    |
-| app.get     |   ✅    |
-| app.put     |   ✅    |
-| app.post    |   ✅    |
-| app.use     |   ✅    |
-| app.delete  |   ✅    |
+| app.methods | support | comment |
+| ----------- | :-----: | :-----: |
+| app.listen  |   ✅    | |
+| app.all     |   ✅    | |
+| app.get     |   ✅    | |
+| app.put     |   ✅    | |
+| app.post    |   ✅    | |
+| app.use     |   ⚠    | See [#2][i2] |
+| app.delete  |   ✅    | |
 
-| res.methods | support |
-| ----------- | :-----: |
-| res.status  |   ✅    |
-| res.json    |   ✅    |
+| res.methods | support | comment |
+| ----------- | :-----: | :-----: |
+| res.status  |   ✅    | |
+| res.json    |   ✅    | |
+
+[i2]: https://github.com/user/repo/issues/19
