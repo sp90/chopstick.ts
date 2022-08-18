@@ -1,13 +1,12 @@
 # <img src="https://github.com/sp90/chopstick.ts/blob/e71c2d3830cef14b0b1617328f07826bded1d892/misc/chopstick.svg" width="60px"></img> Chopstick.ts
 
-A Typescript first web framework running on [Bun](https://bun.sh)
+🥢 A Typescript first web framework running on [Bun](https://bun.sh)
 
 <br />
 
 ## Table of content
 
 - Getting started
-- Upcoming Todos
 - Method support state
 
 <br />
@@ -43,13 +42,6 @@ app.get('/hello/:id', ({ query, params }, res) => {
 
 app.listen()
 ```
-
-<br />
-
-### Upcoming todos
-
-- Write unit tests
--
 
 <br />
 
