@@ -62,4 +62,4 @@ app.listen()
 | res.status  |   ✅    | |
 | res.json    |   ✅    | |
 
-[i2]: https://github.com/user/repo/issues/19
+[i2]: https://github.com/sp90/chopstick.ts/issues/2
