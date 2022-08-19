@@ -5,8 +5,9 @@ const packageJson = require('../../package.json')
 
 try {
   const packageName = core.getInput('package-name')
-
-  const oldVersion = execSync(`npm show ${packageName} version`)
+  const oldVersion = execSync(`npm show ${packageName} version`, {
+    stdio: 'inherit',
+  })
   console.log('Old version: ', oldVersion)
 
   const newVersion = packageJson.version
