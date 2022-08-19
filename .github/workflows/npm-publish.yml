@@ -28,7 +28,7 @@ jobs:
         run: ::set-output name=currentNpmVersion::npm show chopstick.ts version
         id: currentNpmVersion
       - name: Check if npm version was updated
-        run: ./actions/validate-npm-version.js
+        uses: ./actions/validate-npm-version.js
         with:
           current-npm-version: '${{ steps.currentNpmVersion.outputs.currentNpmVersion }}'
       - name: Publish package to npm
