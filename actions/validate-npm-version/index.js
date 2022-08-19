@@ -9,9 +9,9 @@ try {
   const newVersion = packageJson.version
   const isNewer = semver.gt(oldVersion, newVersion)
 
-  isNewer ? core.setCommandEcho('Version is newer') : core.setFailed()
+  isNewer
+    ? core.setCommandEcho('Version is newer')
+    : core.setFailed('Same or older version')
 } catch (error) {
   core.setFailed(error.message)
 }
-
-function breakVersion() {}

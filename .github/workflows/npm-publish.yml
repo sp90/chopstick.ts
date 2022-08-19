@@ -24,7 +24,7 @@ jobs:
         run: bun install
       - name: Bun WIP test
         run: bun wiptest
-      - name: Check if npm version was updated
+      - name: Newer NPM Version
         uses: ./actions/validate-npm-version
         with:
           package-name: 'chopstick.ts'
