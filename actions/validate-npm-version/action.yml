@@ -1,8 +1,8 @@
 name: 'Validate NPM version'
 description: 'This checks if the npm version has changes since last deploy'
 inputs:
-  current-version: # id of input
-    description: 'Current deployed npm version'
+  package-name:
+    description: 'Package name on npm.js'
     required: true
 runs:
   using: 'node16'
