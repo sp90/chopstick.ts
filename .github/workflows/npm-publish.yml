@@ -24,13 +24,10 @@ jobs:
         run: bun install
       - name: Bun WIP test
         run: bun wiptest
-      - name: Get current package version
-        run: npm show chopstick.ts version
-        id: currentNpmVersion
       - name: Check if npm version was updated
         uses: ./actions/validate-npm-version
         with:
-          current-version: '${{ steps.currentNpmVersion.outputs }}'
+          package-name: 'chopstick.ts'
       - name: Publish package to npm
         run: npm publish
         env:
