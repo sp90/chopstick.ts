@@ -24,10 +24,10 @@ jobs:
         run: bun install
       - name: Bun WIP test
         run: bun wiptest
-      - name: Newer NPM Version
-        uses: ./actions/validate-npm-version
-        with:
-          package-name: 'chopstick.ts'
+      # - name: Newer NPM Version
+      #   uses: ./actions/validate-npm-version
+      #   with:
+      #     package-name: 'chopstick.ts'
       - name: Publish package to npm
         run: npm publish
         env:
