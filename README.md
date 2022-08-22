@@ -47,19 +47,19 @@ app.listen()
 
 ### Method support state
 
-| app.methods | support | comment |
-| ----------- | :-----: | :-----: |
-| app.listen  |   ✅    | |
-| app.all     |   ✅    | |
-| app.get     |   ✅    | |
-| app.put     |   ✅    | |
-| app.post    |   ✅    | |
-| app.use     |   ⚠    | See [#2][i2] |
-| app.delete  |   ✅    | |
+| app.methods | support |     comment     |
+| ----------- | :-----: | :-------------: |
+| app.listen  |   ✅    |                 |
+| app.all     |   ✅    |                 |
+| app.get     |   ✅    |                 |
+| app.put     |   ✅    |                 |
+| app.post    |   ✅    |                 |
+| app.use     |   ✅    | Requires a path |
+| app.delete  |   ✅    |                 |
 
 | res.methods | support | comment |
 | ----------- | :-----: | :-----: |
-| res.status  |   ✅    | |
-| res.json    |   ✅    | |
+| res.status  |   ✅    |         |
+| res.json    |   ✅    |         |
 
 [i2]: https://github.com/sp90/chopstick.ts/issues/2
