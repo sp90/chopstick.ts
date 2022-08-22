@@ -49,3 +49,5 @@ export type TChopRes = {
   text: Function
   status: Function
 }
+
+export interface IListenCallback {}

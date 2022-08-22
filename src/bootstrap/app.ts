@@ -2,7 +2,6 @@ import * as Bun from 'bun'
 import findRoute from '../utility/findRoute'
 import logging from '../utility/logging'
 import {
-  IChopListenOptions,
   IMethodDirectory,
   setExecutions,
   TExecutions,
@@ -114,23 +113,25 @@ export default class Chop {
     return res.bunRes()
   }
 
-  listen(options: IChopListenOptions = { port: process.env.PORT || 3000 }) {
+  listen(port: number, cb?: Function) {
     const _self = this
 
     logging.init()
-    logging.info(`🥢 on port ${options.port}`)
+    logging.info(`🥢 on port ${port}`)
     // logging.message(this.pathDirectory as any)
 
     Bun.serve({
-      port: options.port,
+      port: port || process.env.PORT || 3000,
       async fetch(req: Request) {
-        const event = _self._dispatchEvent(req)
-
-        return event
+        return _self._dispatchEvent(req)
       },
       error(error: Error) {
         return new Response('Uh oh!!\n' + error.toString(), { status: 500 })
       },
     })
+
+    if (cb && typeof cb === 'function') {
+      cb(null)
+    }
   }
 }

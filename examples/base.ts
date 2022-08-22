@@ -38,8 +38,7 @@ app.get('/hello/:id', ({ query, params }: ChopReq, res: ChopRes) => {
   })
 })
 
-app.listen({ port: process.env.PORT })
-// Defaults to port 3000
-//
-// To run on port 8080 do:
-// app.listen({ port: 8080 })
+app.listen(3000, (err: string) => {
+  console.log('listen error: ', err)
+  console.log('hello world its running')
+})
