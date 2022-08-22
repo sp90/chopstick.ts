@@ -17,4 +17,4 @@ app.use(() => {
   console.log('hello middle')
 })
 
-app.listen({ port: 3000 })
+app.listen(3000)

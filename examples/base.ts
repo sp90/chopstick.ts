@@ -19,10 +19,6 @@ const returnJson: ChopCb = (_, res) => {
   return res.json({ ...anotherObj, ...res.userData })
 }
 
-app.use(() => {
-  console.log('hello everywhere')
-})
-
 app.use('/hello', () => {
   console.log('hello everywhere 2')
 })
@@ -39,6 +35,6 @@ app.get('/hello/:id', ({ query, params }: ChopReq, res: ChopRes) => {
 })
 
 app.listen(3000, (err: string) => {
-  console.log('listen error: ', err)
+  // console.log('listen error: ', err
   console.log('hello world its running')
 })

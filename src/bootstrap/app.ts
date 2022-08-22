@@ -21,67 +21,76 @@ const notFoundExecFallback = [
 ]
 
 export default class Chop {
+  private itemCount = 0
   private notFoundExec: TRouteCbFunction[] = notFoundExecFallback
-  private useDirectory = new Map<string, TRouteCbFunction[]>()
   private pathDirectory = new Map<string, IMethodDirectory>()
 
   constructor() {}
 
   get(path: string, executions: TExecutions) {
-    this.pathDirectory.set(path, {
-      GET: setExecutions(executions),
-    })
+    this.updatePathDirectory(path, executions, ['GET'])
   }
 
   put(path: string, executions: TExecutions) {
-    this.pathDirectory.set(path, {
-      PUT: setExecutions(executions),
-    })
+    this.updatePathDirectory(path, executions, ['PUT'])
   }
 
   patch(path: string, executions: TExecutions) {
-    this.pathDirectory.set(path, {
-      PATCH: setExecutions(executions),
-    })
+    this.updatePathDirectory(path, executions, ['PATCH'])
   }
 
   post(path: string, executions: TExecutions) {
-    this.pathDirectory.set(path, {
-      POST: setExecutions(executions),
-    })
+    this.updatePathDirectory(path, executions, ['POST'])
   }
 
   delete(path: string, executions: TExecutions) {
-    this.pathDirectory.set(path, {
-      DELETE: setExecutions(executions),
-    })
+    this.updatePathDirectory(path, executions, ['DELETE'])
   }
 
   all(path: string, executions: TExecutions) {
-    this.pathDirectory.set(path, {
-      GET: setExecutions(executions),
-      PUT: setExecutions(executions),
-      PATCH: setExecutions(executions),
-      POST: setExecutions(executions),
-      DELETE: setExecutions(executions),
-    })
+    this.updatePathDirectory(path, executions, [
+      'GET',
+      'DELETE',
+      'PATCH',
+      'POST',
+      'PUT',
+    ])
   }
 
-  use(pathOrExecutions: string | TExecutions, executions?: TExecutions) {
-    const selectedPath =
-      typeof pathOrExecutions === 'string' ? pathOrExecutions : '(.*)'
-    const selectedExecutions =
-      typeof pathOrExecutions === 'string' ? executions : pathOrExecutions
+  use(path: string, executions: TExecutions) {
+    this.updatePathDirectory(path, executions, [
+      'GET',
+      'DELETE',
+      'PATCH',
+      'POST',
+      'PUT',
+    ])
+  }
 
-    const pathExists = this.useDirectory.get(selectedPath)
+  private updatePathDirectory(
+    path: string,
+    executions: TExecutions,
+    methods: TMethods[]
+  ) {
+    const pathExists = this.pathDirectory.get(path)
+    const executionsToSet = setExecutions(executions)
 
     if (pathExists) {
-      this.useDirectory.set(
-        selectedPath,
-        pathExists.concat(setExecutions(selectedExecutions))
-      )
+      Object.keys(pathExists).forEach((method) => {
+        if (pathExists[method]) {
+          pathExists[method] = pathExists[method].concat(executionsToSet)
+        } else {
+          pathExists[method] = executionsToSet
+        }
+      })
     } else {
-      this.useDirectory.set(selectedPath, setExecutions(selectedExecutions))
+      const methodsToSet = {}
+
+      methods.forEach((method) => {
+        methodsToSet[method] = executionsToSet
+      })
+
+      this.pathDirectory.set(path, methodsToSet)
     }
   }
 
@@ -97,8 +106,7 @@ export default class Chop {
     const route = findRoute(
       bunReq.method as TMethods,
       urlInstance.pathname,
-      this.pathDirectory,
-      this.useDirectory
+      this.pathDirectory
     )
 
     let req = chopRequest(bunReq, urlSearchParamsAsObj, route)
@@ -126,6 +134,8 @@ export default class Chop {
         return _self._dispatchEvent(req)
       },
       error(error: Error) {
+        console.log(error)
+
         return new Response('Uh oh!!\n' + error.toString(), { status: 500 })
       },
     })
