@@ -1,8 +1,11 @@
+
 # <img src="https://github.com/sp90/chopstick.ts/blob/e71c2d3830cef14b0b1617328f07826bded1d892/misc/chopstick.svg" width="60px"></img> Chopstick.ts
 
-🥢 A Typescript first web framework running on [Bun](https://bun.sh)
-
+A Typescript first web framework running on [Bun](https://bun.sh)
+  
 <br />
+  
+[![Chopstick.ts - build and test](https://github.com/sp90/chopstick.ts/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/sp90/chopstick.ts/actions/workflows/build-and-test.yml) [![npm version](https://badge.fury.io/js/chopstick.ts.svg)](https://badge.fury.io/js/chopstick.ts)
 
 ## Table of content
 
