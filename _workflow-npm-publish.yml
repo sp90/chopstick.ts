@@ -3,7 +3,7 @@
 
 name: Chopstick.ts - package deploy
 
-on: push
+on: release
 
 jobs:
   auto-deploy:
@@ -12,9 +12,9 @@ jobs:
       - name: Action checkout
         uses: actions/checkout@v3
       - name: Action setup bun
-        uses: xhyrom/setup-bun@v0.1.2
+        uses: xhyrom/setup-bun@v0.1.7
         with:
-          bun-version: '0.1.3'
+          bun-version: '0.1.10'
       - name: Action setup node
         uses: actions/setup-node@v3
         with:
@@ -22,12 +22,6 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Bun install packages
         run: bun install
-      - name: Bun WIP test
-        run: bun wiptest
-      # - name: Newer NPM Version
-      #   uses: ./actions/validate-npm-version
-      #   with:
-      #     package-name: 'chopstick.ts'
       - name: Publish package to npm
         run: npm publish
         env:
