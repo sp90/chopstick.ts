@@ -23,11 +23,26 @@ export class ChopResponse {
     return this
   }
 
+  // TODO rewrite send
+  send(message: string) {
+    this._responseBody = message
+    this.asType = 'text'
+
+    return this
+  }
+
   json(message: any) {
     this._responseBody = message
     this.asType = 'json'
 
     return this
+  }
+
+  end() {
+    return new Response('', {
+      headers: this._headers,
+      status: this._status,
+    })
   }
 
   bunRes() {

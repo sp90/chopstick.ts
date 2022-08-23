@@ -1,14 +1,18 @@
 import * as Bun from 'bun'
+import { corsModule, TCorsOptions } from '../utility/cors'
 import findRoute from '../utility/findRoute'
 import logging from '../utility/logging'
 import {
   IMethodDirectory,
+  IPathObj,
   setExecutions,
   TExecutions,
   TMethods,
   TRouteCbFunction,
+  TRouteErrorCbFunction,
 } from '../utility/routeHelpers'
 import { groupParamsByKey } from '../utility/searchparams'
+import { ChopNext } from './next'
 import { chopRequest } from './request'
 import { ChopResponse } from './response'
 
@@ -21,9 +25,13 @@ const notFoundExecFallback = [
 ]
 
 export default class Chop {
-  private itemCount = 0
+  private order = 0
   private notFoundExec: TRouteCbFunction[] = notFoundExecFallback
   private pathDirectory = new Map<string, IMethodDirectory>()
+  private useDirectory = new Map<string, IPathObj>()
+
+  // TODO add default error function
+  private errorFn: TRouteErrorCbFunction = null
 
   constructor() {}
 
@@ -57,14 +65,37 @@ export default class Chop {
     ])
   }
 
-  use(path: string, executions: TExecutions) {
-    this.updatePathDirectory(path, executions, [
-      'GET',
-      'DELETE',
-      'PATCH',
-      'POST',
-      'PUT',
-    ])
+  use(pathOrExecutions: string | TExecutions, executions?: TExecutions) {
+    const selectedPath =
+      typeof pathOrExecutions === 'string' ? pathOrExecutions : '(.*)'
+    const selectedExecutions =
+      typeof pathOrExecutions === 'string' ? executions : pathOrExecutions
+
+    this.order += 1
+
+    this.useDirectory.set(selectedPath, {
+      order: this.order,
+      executions: setExecutions(selectedExecutions),
+    })
+  }
+
+  error(executionFn: TRouteErrorCbFunction) {
+    this.errorFn = executionFn
+  }
+
+  cors(o?: TCorsOptions | Function) {
+    // if options are static (either via defaults or custom options passed in), wrap in a function
+    let optionsCallback = null
+
+    if (typeof o === 'function') {
+      optionsCallback = o
+    } else {
+      optionsCallback = (_, cb: Function) => {
+        cb(null, o)
+      }
+    }
+
+    corsModule(optionsCallback)
   }
 
   private updatePathDirectory(
@@ -75,19 +106,32 @@ export default class Chop {
     const pathExists = this.pathDirectory.get(path)
     const executionsToSet = setExecutions(executions)
 
+    this.order += 1
+
     if (pathExists) {
       Object.keys(pathExists).forEach((method) => {
-        if (pathExists[method]) {
-          pathExists[method] = pathExists[method].concat(executionsToSet)
+        if (pathExists[method]?.executions?.length) {
+          pathExists[method] = {
+            order: this.order,
+            executions: (pathExists[method] as IPathObj).executions.concat(
+              executionsToSet
+            ),
+          }
         } else {
-          pathExists[method] = executionsToSet
+          pathExists[method] = {
+            order: this.order,
+            executions: executionsToSet,
+          }
         }
       })
     } else {
       const methodsToSet = {}
 
       methods.forEach((method) => {
-        methodsToSet[method] = executionsToSet
+        methodsToSet[method] = {
+          order: this.order,
+          executions: executionsToSet,
+        }
       })
 
       this.pathDirectory.set(path, methodsToSet)
@@ -106,17 +150,30 @@ export default class Chop {
     const route = findRoute(
       bunReq.method as TMethods,
       urlInstance.pathname,
-      this.pathDirectory
+      this.pathDirectory,
+      this.useDirectory
     )
+
+    console.log(route)
 
     let req = chopRequest(bunReq, urlSearchParamsAsObj, route)
     let res = new ChopResponse()
 
     const routeExecArr = route ? route.matchExecArr : this.notFoundExec
 
-    routeExecArr.forEach((eachCall) => {
-      eachCall(req, res) as TRouteCbFunction
-    })
+    let nextClass = new ChopNext()
+
+    try {
+      routeExecArr.forEach((routeFn) => {
+        if (nextClass.error) {
+          throw nextClass.error
+        }
+
+        routeFn(req, res, nextClass.next) as TRouteCbFunction
+      })
+    } catch (e) {
+      this.errorFn(e, req, res)
+    }
 
     return res.bunRes()
   }

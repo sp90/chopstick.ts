@@ -10,20 +10,29 @@ const middleware: ChopCb = (_, res) => {
   }
 }
 
-const returnJson: ChopCb = (_, res) => {
-  console.log('hello return json')
-  const anotherObj = {
-    chop: 'world',
-  }
+// Works like #https://www.npmjs.com/package/cors
+// But i have rewritten it to fit this little webframework
+app.cors()
 
-  return res.json({ ...anotherObj, ...res.userData })
-}
+app.get('/hello', [
+  middleware,
+  (req, res) => {
+    console.log('req.params: ', req.params)
+    console.log('req.query: ', req.query)
 
-app.use('/hello', () => {
+    console.log('hello return json')
+    const anotherObj = {
+      chop: 'world',
+    }
+
+    return res.json({ ...anotherObj, ...res.userData })
+  },
+])
+
+app.use(() => {
   console.log('hello everywhere 2')
 })
 
-app.get('/hello', [middleware, returnJson])
 app.get('/hello/:id', ({ query, params }: ChopReq, res: ChopRes) => {
   console.log('chopchop')
   console.log('params: ', params)
@@ -34,7 +43,13 @@ app.get('/hello/:id', ({ query, params }: ChopReq, res: ChopRes) => {
   })
 })
 
-app.listen(3000, (err: string) => {
+// Error handling
+app.error((err: Error, req: ChopReq, res: ChopRes) => {
+  console.error(err.stack)
+  res.status(500).send('Something broke!')
+})
+
+app.listen(3000, (err: Error) => {
   // console.log('listen error: ', err
   console.log('hello world its running')
 })

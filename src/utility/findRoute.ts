@@ -1,5 +1,10 @@
 import { match, MatchResult } from '../path-to-regex-temp/index'
-import { IMethodDirectory, TMethods, TRouteCbFunction } from './routeHelpers'
+import {
+  IMethodDirectory,
+  IPathObj,
+  TMethods,
+  TRouteCbFunction,
+} from './routeHelpers'
 
 interface IRoute {
   matchObj: MatchResult<object>
@@ -9,54 +14,52 @@ interface IRoute {
 const findRoute = (
   method: TMethods,
   urlPathName: string,
-  pathDirectory: Map<string, IMethodDirectory>
+  pathDirectory: Map<string, IMethodDirectory>,
+  useDirectory: Map<string, IPathObj>
 ): IRoute | null => {
-  const matches = []
+  const matchExecArr = []
+  let matchObj = null
 
   pathDirectory.forEach((_, matchingPath) => {
-    const matchObj = match(matchingPath, { decode: decodeURIComponent })(
+    const innerMatchObj = match(matchingPath, { decode: decodeURIComponent })(
       urlPathName
     )
 
-    const matchExecArr = matchObj && pathDirectory.get(matchingPath)[method]
+    const innerMatchExecArr =
+      innerMatchObj && pathDirectory.get(matchingPath)[method]
 
-    if (matchExecArr) {
-      matches.push({
-        matchObj,
-        matchExecArr,
-      })
+    if (innerMatchExecArr) {
+      matchExecArr.push(innerMatchExecArr)
+    }
+
+    if (!matchObj) {
+      matchObj = innerMatchObj
     }
   })
 
-  const foundMatch = matches.find((item) => item)
+  useDirectory.forEach((_, useMatchingPath) => {
+    const matchObj = match(useMatchingPath, { decode: decodeURIComponent })(
+      urlPathName
+    )
 
-  if (foundMatch) {
-    // foundMatch.matchExecArr = useMatches.flat().concat(foundMatch.matchExecArr)
+    const innerMatchExecArr = matchObj && useDirectory.get(useMatchingPath)
 
-    return foundMatch
+    if (innerMatchExecArr) {
+      matchExecArr.push(innerMatchExecArr)
+    }
+  })
+
+  if (!matchObj) {
+    return null
   }
 
-  // useDirectory.forEach((_, useMatchingPath) => {
-  //   const matchObj = match(useMatchingPath, { decode: decodeURIComponent })(
-  //     urlPathName
-  //   )
-
-  //   const matchExecArr = matchObj && useDirectory.get(useMatchingPath)
-
-  //   if (matchExecArr) {
-  //     useMatches.push(matchExecArr)
-  //   }
-  // })
-
-  // const foundMatch = matches.find((item) => item)
-
-  // if (foundMatch) {
-  //   foundMatch.matchExecArr = useMatches.flat().concat(foundMatch.matchExecArr)
-
-  //   return foundMatch
-  // }
-
-  return null
+  return {
+    matchObj,
+    matchExecArr: matchExecArr
+      .sort((a: IPathObj, b: IPathObj) => (a.order > b.order ? 1 : -1))
+      .map((obj: IPathObj) => obj.executions)
+      .flat(),
+  }
 }
 
 export default findRoute

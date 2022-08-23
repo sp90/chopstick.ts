@@ -47,19 +47,21 @@ app.listen()
 
 ### Method support state
 
-| app.methods | support |     comment     |
-| ----------- | :-----: | :-------------: |
-| app.listen  |   ✅    |                 |
-| app.all     |   ✅    |                 |
-| app.get     |   ✅    |                 |
-| app.put     |   ✅    |                 |
-| app.post    |   ✅    |                 |
-| app.use     |   ✅    | Requires a path |
-| app.delete  |   ✅    |                 |
+| app.methods | support |                             comment                              |
+| ----------- | :-----: | :--------------------------------------------------------------: |
+| app.listen  |   ✅    |                                                                  |
+| app.all     |   ✅    |                                                                  |
+| app.get     |   ✅    |                                                                  |
+| app.put     |   ✅    |                                                                  |
+| app.post    |   ✅    |                                                                  |
+| app.use     |   ✅    |                                                                  |
+| app.delete  |   ✅    |                                                                  |
+| app.error   |   ✅    |                put at the end to catch all errors                |
+| app.cors    |   ✅    | this works similar as the NPM-cors package for express extension |
 
 | res.methods | support | comment |
 | ----------- | :-----: | :-----: |
 | res.status  |   ✅    |         |
+| res.text    |   ✅    |         |
 | res.json    |   ✅    |         |
-
-[i2]: https://github.com/sp90/chopstick.ts/issues/2
+| res.end     |   ✅    |         |
