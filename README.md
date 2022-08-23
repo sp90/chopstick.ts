@@ -25,7 +25,7 @@ import Chopstick from 'chopstick.ts'
 
 const app = new Chopstick()
 
-app.use(() => {
+app.use('/hello', () => {
   console.log('hello middle')
 })
 
