@@ -19,6 +19,8 @@ Important to know is, this is not aiming to be a drop in replacement for express
 
 It is though very inspired by the express syntax so its easy to adopt, currently solo working on the project but are open to PR's - besides that documentation & unit tests are coming
 
+I'm also working on my first application that is utilizing this package in production
+
 ```sh
 # Install package
 bun install chopstick.ts
