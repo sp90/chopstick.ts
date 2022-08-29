@@ -1,9 +1,10 @@
 import { match, MatchResult } from '../path-to-regex-temp/index'
+import exectionMap from './exectionMap'
 import {
   IMethodDirectory,
-  IPathObj,
   TMethods,
   TRouteCbFunction,
+  TRouteCbObj,
 } from './routeHelpers'
 
 interface IRoute {
@@ -15,9 +16,9 @@ const findRoute = (
   method: TMethods,
   urlPathName: string,
   pathDirectory: Map<string, IMethodDirectory>,
-  useDirectory: Map<string, IPathObj>
+  useDirectory: Map<string, TRouteCbObj[]>
 ): IRoute | null => {
-  const matchExecArr = []
+  let matchExecArr: TRouteCbObj[] = []
   let matchObj = null
 
   pathDirectory.forEach((_, matchingPath) => {
@@ -28,11 +29,11 @@ const findRoute = (
     const innerMatchExecArr =
       innerMatchObj && pathDirectory.get(matchingPath)[method]
 
-    if (innerMatchExecArr) {
-      matchExecArr.push(innerMatchExecArr)
+    if (innerMatchExecArr?.length) {
+      matchExecArr = matchExecArr.concat(innerMatchExecArr)
     }
 
-    if (!matchObj) {
+    if (!matchObj && innerMatchObj) {
       matchObj = innerMatchObj
     }
   })
@@ -45,7 +46,7 @@ const findRoute = (
     const innerMatchExecArr = matchObj && useDirectory.get(useMatchingPath)
 
     if (innerMatchExecArr) {
-      matchExecArr.push(innerMatchExecArr)
+      matchExecArr = matchExecArr.concat(innerMatchExecArr)
     }
   })
 
@@ -55,10 +56,7 @@ const findRoute = (
 
   return {
     matchObj,
-    matchExecArr: matchExecArr
-      .sort((a: IPathObj, b: IPathObj) => (a.order > b.order ? 1 : -1))
-      .map((obj: IPathObj) => obj.executions)
-      .flat(),
+    matchExecArr: exectionMap(matchExecArr),
   }
 }
 

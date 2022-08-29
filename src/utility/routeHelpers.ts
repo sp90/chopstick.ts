@@ -1,40 +1,36 @@
+import { ChopResponse } from '../bootstrap/response'
+
 export type TMethods = 'GET' | 'PATCH' | 'PUT' | 'POST' | 'DELETE'
 
 export type TRouteCbFunction = (
   req: TChopReq,
-  res: any,
+  res: TChopRes,
   next?: TChopNext
 ) => any
+
+export type TRouteCbObj = {
+  order: number
+  cb: TRouteCbFunction
+}
+
 export type TRouteErrorCbFunction = (
   error: Error,
   req: TChopReq,
   res: any
 ) => any
-export type TExecutions = TRouteCbFunction | TRouteCbFunction[]
-
-export const setExecutions = (executions: TExecutions) => {
-  if (typeof executions === 'function') {
-    return [executions]
-  }
-
-  return executions
-}
+export type TExecutions = TRouteCbObj | TRouteCbObj[]
+export type TExecutionFns = TRouteCbFunction | TRouteCbFunction[]
 
 export interface IChopListenOptions {
   port: string | number
 }
 
-export interface IPathObj {
-  order: number
-  executions: TRouteCbFunction[]
-}
-
 export interface IMethodDirectory {
-  GET?: IPathObj
-  PUT?: IPathObj
-  PATCH?: IPathObj
-  POST?: IPathObj
-  DELETE?: IPathObj
+  GET?: TRouteCbObj[]
+  PUT?: TRouteCbObj[]
+  PATCH?: TRouteCbObj[]
+  POST?: TRouteCbObj[]
+  DELETE?: TRouteCbObj[]
 }
 
 export interface IUseDirectory {
@@ -57,13 +53,5 @@ export type TChopReq = {
 
 export type TChopNext = Function
 
-export type TChopRes = {
-  // TODO make custom body types available
-  _status?: number
-  _body?: any
-  json: Function
-  text: Function
-  status: Function
-}
-
+export type TChopRes = ChopResponse
 export interface IListenCallback {}

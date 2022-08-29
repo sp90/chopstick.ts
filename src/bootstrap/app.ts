@@ -1,61 +1,58 @@
 import * as Bun from 'bun'
 import { corsModule, TCorsOptions } from '../utility/cors'
+import exectionMap from '../utility/exectionMap'
 import findRoute from '../utility/findRoute'
 import logging from '../utility/logging'
 import {
   IMethodDirectory,
-  IPathObj,
-  setExecutions,
-  TExecutions,
+  TExecutionFns,
   TMethods,
   TRouteCbFunction,
+  TRouteCbObj,
   TRouteErrorCbFunction,
 } from '../utility/routeHelpers'
 import { groupParamsByKey } from '../utility/searchparams'
+import { setExecutions } from '../utility/setExecutions'
 import { ChopNext } from './next'
 import { chopRequest } from './request'
-import { ChopResponse } from './response'
+import { ChopResponse, IHeaderObj } from './response'
 
-const notFoundExecFallback = [
-  (_, res) => {
+export default class Chop {
+  private defaultUserHeaders: IHeaderObj = null
+  private pathDirectory = new Map<string, IMethodDirectory>()
+  private useDirectory = new Map<string, TRouteCbObj[]>()
+  private notFoundExec: TRouteCbObj[] = setExecutions((_, res) => {
     return res.status(404).json({
       message: 'Route was not found',
     })
-  },
-]
-
-export default class Chop {
-  private order = 0
-  private notFoundExec: TRouteCbFunction[] = notFoundExecFallback
-  private pathDirectory = new Map<string, IMethodDirectory>()
-  private useDirectory = new Map<string, IPathObj>()
+  })
 
   // TODO add default error function
   private errorFn: TRouteErrorCbFunction = null
 
   constructor() {}
 
-  get(path: string, executions: TExecutions) {
+  get(path: string, executions: TExecutionFns) {
     this.updatePathDirectory(path, executions, ['GET'])
   }
 
-  put(path: string, executions: TExecutions) {
+  put(path: string, executions: TExecutionFns) {
     this.updatePathDirectory(path, executions, ['PUT'])
   }
 
-  patch(path: string, executions: TExecutions) {
+  patch(path: string, executions: TExecutionFns) {
     this.updatePathDirectory(path, executions, ['PATCH'])
   }
 
-  post(path: string, executions: TExecutions) {
+  post(path: string, executions: TExecutionFns) {
     this.updatePathDirectory(path, executions, ['POST'])
   }
 
-  delete(path: string, executions: TExecutions) {
+  delete(path: string, executions: TExecutionFns) {
     this.updatePathDirectory(path, executions, ['DELETE'])
   }
 
-  all(path: string, executions: TExecutions) {
+  all(path: string, executions: TExecutionFns) {
     this.updatePathDirectory(path, executions, [
       'GET',
       'DELETE',
@@ -65,18 +62,28 @@ export default class Chop {
     ])
   }
 
-  use(pathOrExecutions: string | TExecutions, executions?: TExecutions) {
+  defaultHeaders(headerObj: IHeaderObj) {
+    this.defaultUserHeaders = headerObj
+
+    return
+  }
+
+  use(pathOrExecutions: string | TExecutionFns, executions?: TExecutionFns) {
     const selectedPath =
       typeof pathOrExecutions === 'string' ? pathOrExecutions : '(.*)'
     const selectedExecutions =
       typeof pathOrExecutions === 'string' ? executions : pathOrExecutions
 
-    this.order += 1
+    const useExists = this.useDirectory.get(selectedPath)
 
-    this.useDirectory.set(selectedPath, {
-      order: this.order,
-      executions: setExecutions(selectedExecutions),
-    })
+    if (useExists) {
+      this.useDirectory.set(
+        selectedPath,
+        useExists.concat(setExecutions(selectedExecutions))
+      )
+    } else {
+      this.useDirectory.set(selectedPath, setExecutions(selectedExecutions))
+    }
   }
 
   error(executionFn: TRouteErrorCbFunction) {
@@ -95,50 +102,37 @@ export default class Chop {
       }
     }
 
-    corsModule(optionsCallback)
+    this.use(corsModule(optionsCallback))
   }
 
   private updatePathDirectory(
     path: string,
-    executions: TExecutions,
+    executions: TExecutionFns,
     methods: TMethods[]
   ) {
     const pathExists = this.pathDirectory.get(path)
     const executionsToSet = setExecutions(executions)
 
-    this.order += 1
-
     if (pathExists) {
       Object.keys(pathExists).forEach((method) => {
         if (pathExists[method]?.executions?.length) {
-          pathExists[method] = {
-            order: this.order,
-            executions: (pathExists[method] as IPathObj).executions.concat(
-              executionsToSet
-            ),
-          }
+          pathExists[method] = pathExists[method].concat(executionsToSet)
         } else {
-          pathExists[method] = {
-            order: this.order,
-            executions: executionsToSet,
-          }
+          pathExists[method] = executionsToSet
         }
       })
     } else {
       const methodsToSet = {}
 
       methods.forEach((method) => {
-        methodsToSet[method] = {
-          order: this.order,
-          executions: executionsToSet,
-        }
+        methodsToSet[method] = executionsToSet
       })
 
       this.pathDirectory.set(path, methodsToSet)
     }
   }
 
-  notFound(executions: TExecutions) {
+  notFound(executions: TExecutionFns) {
     this.notFoundExec = setExecutions(executions)
   }
 
@@ -154,28 +148,32 @@ export default class Chop {
       this.useDirectory
     )
 
-    console.log(route)
-
     let req = chopRequest(bunReq, urlSearchParamsAsObj, route)
     let res = new ChopResponse()
 
-    const routeExecArr = route ? route.matchExecArr : this.notFoundExec
+    res.setHeaders(this.defaultUserHeaders)
+
+    const routeExecArr = route
+      ? route.matchExecArr
+      : exectionMap(this.notFoundExec)
 
     let nextClass = new ChopNext()
 
     try {
-      routeExecArr.forEach((routeFn) => {
+      routeExecArr.some((routeFn: TRouteCbFunction) => {
         if (nextClass.error) {
           throw nextClass.error
         }
 
         routeFn(req, res, nextClass.next) as TRouteCbFunction
+
+        return res.getResponseClass()
       })
     } catch (e) {
       this.errorFn(e, req, res)
     }
 
-    return res.bunRes()
+    return res.getResponseClass()
   }
 
   listen(port: number, cb?: Function) {
@@ -184,6 +182,7 @@ export default class Chop {
     logging.init()
     logging.info(`🥢 on port ${port}`)
     // logging.message(this.pathDirectory as any)
+    // logging.message(this.useDirectory as any)
 
     Bun.serve({
       port: port || process.env.PORT || 3000,

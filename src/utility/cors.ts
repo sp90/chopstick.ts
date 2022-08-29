@@ -169,7 +169,9 @@ function cors(
     ]
       .filter((map) => map)
       .forEach((map: Map<string, string>) => {
-        map.forEach(req.bunReq.headers.set)
+        map.forEach((value, key) => {
+          res.headers[key] = value
+        })
       })
     if (options.preflightContinue) {
       next()
@@ -177,7 +179,7 @@ function cors(
       // Safari (and potentially other browsers) need content-length 0,
       //   for 204 or they just hang waiting for a body
       res.status(options.optionsSuccessStatus)
-      req.bunReq.headers.set('Content-Length', '0')
+      res.setHeader('Content-Length', '0')
       res.end()
     }
   } else {
@@ -190,7 +192,9 @@ function cors(
     const headerMaps = [originMap, credentialsMap, exposedHeadersMap]
       .filter((map) => map)
       .forEach((map: Map<string, string>) => {
-        map.forEach(req.bunReq.headers.set)
+        map.forEach((value, key) => {
+          res.headers[key] = value
+        })
       })
 
     next()

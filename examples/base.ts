@@ -12,15 +12,18 @@ const middleware: ChopCb = (_, res) => {
 
 // Works like #https://www.npmjs.com/package/cors
 // But i have rewritten it to fit this little webframework
-app.cors()
+
+app.cors({
+  origin: '*',
+})
 
 app.get('/hello', [
   middleware,
   (req, res) => {
     console.log('req.params: ', req.params)
     console.log('req.query: ', req.query)
-
     console.log('hello return json')
+
     const anotherObj = {
       chop: 'world',
     }
