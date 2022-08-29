@@ -17,7 +17,7 @@ A Typescript first web framework running on [Bun](https://bun.sh)
 
 Important to know is, this is not aiming to be a drop in replacement for express this aims to be a slim framework that works super will in the 🥟 bun ecosystem.
 
-It is though very inspired by the express syntax so its easy to adopt, currently solo working on the project but are open to PR's - besides that documentation testing is coming
+It is though very inspired by the express syntax so its easy to adopt, currently solo working on the project but are open to PR's - besides that documentation & unit tests are coming
 
 ```sh
 # Install package
