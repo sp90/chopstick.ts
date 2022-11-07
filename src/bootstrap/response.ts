@@ -45,6 +45,10 @@ export class ChopResponse {
     return this
   }
 
+  getStatus() {
+    return this._status
+  }
+
   text(message: string) {
     this._responseClass = new Response(message, {
       headers: this.headers,
