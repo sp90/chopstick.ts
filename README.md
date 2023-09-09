@@ -55,27 +55,27 @@ app.listen()
 
 ### Method support state
 
-app.methods        | Support | Comment
--------------------| :-----: | :--------------------------------------: 
-app.listen         |   ✅    | Starts a server and listens for incoming requests
-app.all            |   ✅    | Matches any HTTP method and route
-app.get            |   ✅    | Handles GET requests
-app.put            |   ✅    | Handles PUT requests
-app.post           |   ✅    | Handles POST requests
-app.use            |   ✅    | Mounts middleware to be executed in the request-response cycle
-app.delete         |   ✅    | Handles DELETE requests
-app.error          |   ✅    | Put at the end to catch all errors
-app.cors           |   ✅    | This works similar to the NPM-cors package for express extension
-app.defaultHeaders |   ✅    | Override the default headers in the application
+app.methods        | Support | Comment                                                          |
+-------------------| :-----: | :--------------------------------------------------------------: |
+app.listen         |   ✅    | Starts a server and listens for incoming requests                |
+app.all            |   ✅    | Matches any HTTP method and route                                |
+app.get            |   ✅    | Handles GET requests                                             |
+app.put            |   ✅    | Handles PUT requests                                             |
+app.post           |   ✅    | Handles POST requests                                            |
+app.use            |   ✅    | Mounts middleware to be executed in the request-response cycle   |
+app.delete         |   ✅    | Handles DELETE requests                                          |
+app.error          |   ✅    | Put at the end to catch all errors                               |
+app.cors           |   ✅    | This works similar to the NPM-cors package for express extension |
+app.defaultHeaders |   ✅    | Override the default headers in the application                  |
 
-res.methods       | Support | Comment
-------------------| :-----: | :-------------------------------------- :
-res.status        |   ✅    | Sets the HTTP status code for the response
-res.text          |   ✅    | Sends a plain text response
-res.json          |   ✅    | Sends a JSON response
-res.end           |   ✅    | Ends the response process
-res.setHeader     |   ✅    | Overrides a single header for this one response
-res.setHeaders    |   ✅    | Overrides multiple headers for this one response
+res.methods       | Support | Comment                                          |
+------------------| :-----: | :----------------------------------------------: |
+res.status        |   ✅    | Sets the HTTP status code for the response       |
+res.text          |   ✅    | Sends a plain text response                      |
+res.json          |   ✅    | Sends a JSON response                            |
+res.end           |   ✅    | Ends the response process                        |
+res.setHeader     |   ✅    | Overrides a single header for this one response  |
+res.setHeaders    |   ✅    | Overrides multiple headers for this one response |
 
 ### Default headers
 
