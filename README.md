@@ -56,7 +56,7 @@ app.listen()
 ### Method support state
 
 app.methods        | Support | Comment
--------------------|---------|------------------------------------------
+-------------------| :-----: | :--------------------------------------: 
 app.listen         |   ✅    | Starts a server and listens for incoming requests
 app.all            |   ✅    | Matches any HTTP method and route
 app.get            |   ✅    | Handles GET requests
@@ -69,7 +69,7 @@ app.cors           |   ✅    | This works similar to the NPM-cors package for e
 app.defaultHeaders |   ✅    | Override the default headers in the application
 
 res.methods       | Support | Comment
-------------------|---------|------------------------------------------
+------------------| :-----: | :-------------------------------------- :
 res.status        |   ✅    | Sets the HTTP status code for the response
 res.text          |   ✅    | Sends a plain text response
 res.json          |   ✅    | Sends a JSON response
